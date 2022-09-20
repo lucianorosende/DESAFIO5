@@ -12,20 +12,22 @@ const apiRouter = Express.Router();
 apiRouter.get("/productos/listar", (req, res) => {
     let PRODUCTS = Container.getAll();
 
-    products.length === 0
+    !products.length
         ? res.json({ error: "No products found" })
         : res.json({ PRODUCTS });
 });
 
 // get Products based off id
 apiRouter.get("/productos/listar/:id", (req, res) => {
-    let product = Container.getById(req.params.id);
+    const { id } = req.params;
+    let product = Container.getById(id);
     res.json({ product });
 });
 
 // add products and add id
 apiRouter.post("/productos/guardar", (req, res) => {
-    if (!req.body.title || !req.body.price || !req.body.thumbnail) {
+    const { title, price, thumbnail } = req.body;
+    if (!title || !price || !thumbnail) {
         return res.send("completar todo el formulario");
     }
     if (req.body.id === undefined) {
@@ -41,24 +43,26 @@ apiRouter.post("/productos/guardar", (req, res) => {
 
 // update product based off id
 apiRouter.put("/productos/actualizar/:id", (req, res) => {
-    let product = Container.getById(req.params.id);
-    product.title = req.body.title;
-    product.price = req.body.price;
-    product.thumbnail = req.body.thumbnail;
-    product.id = parseInt(req.params.id);
+    let { title, price, thumbnail } = req.body;
+    let producto = Container.update(req.params.id, {
+        title,
+        price,
+        thumbnail,
+    });
 
-    res.send(product);
+    producto
+        ? res.json(producto)
+        : res.json({ error: "producto no encontrado" });
 });
 
 // delete product based off id
 apiRouter.delete("/productos/borrar/:id", (req, res) => {
-    let product = products.filter(
-        (product) => product.id !== parseInt(req.params.id)
-    );
-    products = product;
-    res.send(products);
-    if (products[req.params.id] === undefined)
-        return res.send(`no existe el producto con id: ${req.params.id}`);
+    const result = Container.delete(req.params.id);
+    products = result;
+
+    products.length === 0
+        ? res.send(`no hay mas productos`)
+        : res.send(products);
 });
 
 apiRouter.get("/productos/vista", (req, res) => {
