@@ -38,7 +38,8 @@ apiRouter.post("/productos/guardar", (req, res) => {
     }
 
     products.push(req.body);
-    res.redirect("/api/productos/vista");
+    res.send("producto con id: " + req.body.id);
+    // res.redirect("/api/productos/vista");
 });
 
 // update product based off id
@@ -58,10 +59,12 @@ apiRouter.put("/productos/actualizar/:id", (req, res) => {
 // delete product based off id
 apiRouter.delete("/productos/borrar/:id", (req, res) => {
     const result = Container.delete(req.params.id);
+    const getItem = Container.getById(req.params.id);
+    console.log(getItem);
     products = result;
 
-    products.length === 0
-        ? res.send(`no hay mas productos`)
+    getItem === "no existe ningun producto para el valor que deseas"
+        ? res.send(`no hay producto con id: ${req.params.id}`)
         : res.send(products);
 });
 
