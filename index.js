@@ -33,7 +33,8 @@ apiRouter.post("/productos/guardar", (req, res) => {
     if (req.body.id === undefined) {
         req.body.id = 1;
         if (products.length > 0) {
-            req.body.id = products[products.length - 1].id + 1;
+            let findId = products.find((p) => p.id === products.length).id;
+            req.body.id = findId + 1;
         }
     }
 
@@ -60,7 +61,6 @@ apiRouter.put("/productos/actualizar/:id", (req, res) => {
 apiRouter.delete("/productos/borrar/:id", (req, res) => {
     const result = Container.delete(req.params.id);
     const getItem = Container.getById(req.params.id);
-    console.log(getItem);
     products = result;
 
     getItem === "no existe ningun producto para el valor que deseas"
