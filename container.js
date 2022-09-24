@@ -35,7 +35,12 @@ class Contenedor {
     }
     delete(id) {
         let newData = this.getAll();
+        const getItem = this.getById(id);
         let filter = newData.filter((product) => product.id != id);
+
+        if (getItem === "no existe ningun producto para el valor que deseas") {
+            return null;
+        }
         return filter;
     }
 }

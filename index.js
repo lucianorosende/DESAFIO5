@@ -60,12 +60,13 @@ apiRouter.put("/productos/actualizar/:id", (req, res) => {
 // delete product based off id
 apiRouter.delete("/productos/borrar/:id", (req, res) => {
     const result = Container.delete(req.params.id);
-    const getItem = Container.getById(req.params.id);
-    products = result;
 
-    getItem === "no existe ningun producto para el valor que deseas"
-        ? res.send(`no hay producto con id: ${req.params.id}`)
-        : res.send(products);
+    if (result === null) {
+        res.send(`no hay producto con id: ${req.params.id}`);
+    } else {
+        products = result;
+        res.send(products);
+    }
 });
 
 apiRouter.get("/productos/vista", (req, res) => {
